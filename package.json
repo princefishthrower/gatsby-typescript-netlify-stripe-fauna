@@ -1,11 +1,13 @@
 {
-  "name": "gatsby-starter-typescript-plus",
-  "description": "A starter kit for TypeScript-based Gatsby projects with sensible defaults.",
+  "name": "gatsby-simple-typescript-boilerplate",
+  "description": "A super simple, just-add-water Gatsby TypeScript boilerplate.",
   "version": "1.0.0",
   "private": true,
-  "author": "Resi Respati <resir014@gmail.com>",
+  "author": "Chris Frewin <frewin.christopher@gmail.com>",
   "keywords": [
-    "gatsby"
+    "gatsby",
+    "typescript",
+    "boilerplate"
   ],
   "license": "MIT",
   "main": "n/a",
@@ -24,8 +26,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.10",
-    "@emotion/styled": "^10.0.12",
+    "@emotion/core": "^10.0.28",
     "babel-plugin-styled-components": "^1.10.1",
     "classnames": "^2.2.6",
     "gatsby": "^2.10.0",

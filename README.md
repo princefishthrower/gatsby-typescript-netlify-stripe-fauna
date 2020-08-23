@@ -1,6 +1,6 @@
 # Gatsby Simple TypeScript Boilerplate
 
-A super simple bare bones, true just-add-water TypeScript boilerplate.
+A super simple, bare bones, truly 'just-add-water' TypeScript boilerplate.
 
 Install NPM modules:
 
@@ -8,14 +8,16 @@ Install NPM modules:
 
 Start developing:
 
-`gatsby develop`
+`gatsby develop` (or `npm run dev`)
 
 Build a production version:
 
-`gatsby build`
+`gatsby build` (or `npm run build`)
 
-Add markdown style blog posts or similar to the `content/` folder.
+Create pages in markdown in the `content/` folder.
 
 Add react components to the `components/` folder.
 
-Add pages to the `pages/` folder.
+Add pages (the actual separate static html pages that get produced) to the `pages/` folder.
+
+Enjoy!

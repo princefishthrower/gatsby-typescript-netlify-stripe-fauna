@@ -1,6 +1,6 @@
 {
-  "name": "gatsby-simple-typescript-boilerplate",
-  "description": "A super simple, just-add-water Gatsby TypeScript boilerplate.",
+  "name": "gatsby-typescript-netlify-stripe-fauna",
+  "description": "A full, multi-page static boilerplate using Gatsby and TypeScript, including authentication with Netlify's identity platform, subscriptions with Stripe, and customer data handling with Fauna.",
   "version": "1.0.0",
   "private": true,
   "author": "Chris Frewin <frewin.christopher@gmail.com>",
@@ -46,6 +46,7 @@
     "gatsby-transformer-remark": "^2.5.0",
     "gatsby-transformer-sharp": "^2.2.0",
     "modern-normalize": "^0.5.0",
+    "netlify-identity-widget": "^1.9.1",
     "normalize.css": "^8.0.1",
     "polished": "^3.4.1",
     "prism-themes": "^1.1.0",
@@ -53,10 +54,12 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
+    "react-netlify-identity": "^0.2.5",
     "typescript": "^3.5.2"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.8",
+    "@types/netlify-identity-widget": "^1.9.1",
     "@types/node": "^12.0.10",
     "@types/react": "^16.8.22",
     "@types/react-dom": "^16.8.4",

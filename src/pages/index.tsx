@@ -21,7 +21,7 @@ export default function IndexPage() {
       return {
         tierName,
         tierData: {
-          message: '',
+          message: 'Log in to continue',
           src: ''
         }
       }

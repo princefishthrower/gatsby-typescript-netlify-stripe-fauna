@@ -6,12 +6,13 @@
  */
 
 import React from 'react'
-import PropTypes from 'prop-types'
 import { StaticQuery, graphql } from 'gatsby'
 import { IdentityContextProvider } from 'react-netlify-identity-widget'
 import 'react-netlify-identity-widget/styles.css'
 
-import Header from './header'
+import Header from './Header'
+import { Footer } from './Footer'
+import Constants from '../../constants/Constants'
 
 const Layout = ({ children }) => {
   return (
@@ -26,7 +27,7 @@ const Layout = ({ children }) => {
         }
       `}
       render={data => (
-        <IdentityContextProvider url="https://gatsby-typescript-netlify-stripe-fauna.netlify.com">
+        <IdentityContextProvider url={Constants.NETLIFY_URL}>
           <Header siteTitle={data.site.siteMetadata.title} />
           <div
             style={{
@@ -37,20 +38,12 @@ const Layout = ({ children }) => {
             }}
           >
             <main>{children}</main>
-            <footer>
-              © {new Date().getFullYear()}, Built with
-              {` `}
-              <a href="https://www.gatsbyjs.org">Gatsby</a>
-            </footer>
+            <Footer />
           </div>
         </IdentityContextProvider>
       )}
     />
   )
-}
-
-Layout.propTypes = {
-  children: PropTypes.node.isRequired
 }
 
 export default Layout

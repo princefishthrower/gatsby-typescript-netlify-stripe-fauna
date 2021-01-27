@@ -1,15 +1,17 @@
 import { Link } from 'gatsby'
 import React, { useState } from 'react'
-import IdentityModal from 'react-netlify-identity-widget'
+import IdentityModal, { useNetlifyIdentity } from 'react-netlify-identity-widget'
+import Constants from '../../constants/Constants'
+import { manageSubscription } from '../../utils/manageSubscription'
 
 export interface IHeaderProps {
   siteTitle: string
 }
 
 export default function Header(props: IHeaderProps) {
+  const identity = useNetlifyIdentity(Constants.NETLIFY_URL)
   const { siteTitle } = props
   const [showDialog, setShowDialog] = useState(false)
-  console.log('I AM RENDERING AAAAA')
   return (
     <header
       style={{
@@ -35,7 +37,16 @@ export default function Header(props: IHeaderProps) {
             {siteTitle}
           </Link>
         </h1>
-        <button onClick={() => setShowDialog(true)}>Log In</button>
+
+        {identity && identity.user ? (
+          <>
+            <p>You are logged in as {identity.user.user_metadata.full_name}</p>
+            <button onClick={() => identity.logoutUser()}>Log out</button>
+            <button onClick={() => manageSubscription(identity.user)}>Manage Subscription</button>
+          </>
+        ) : (
+          <button onClick={() => setShowDialog(true)}>Log In</button>
+        )}
       </div>
       <IdentityModal aria-label="Login Modal" showDialog={showDialog} onCloseDialog={() => setShowDialog(false)} />
     </header>

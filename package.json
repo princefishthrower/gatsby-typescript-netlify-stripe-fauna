@@ -1,6 +1,6 @@
 {
   "name": "gatsby-typescript-netlify-stripe-fauna",
-  "description": "A full, multi-page static boilerplate using Gatsby and TypeScript, including authentication with Netlify's identity platform, subscriptions with Stripe, and customer data handling with Fauna.",
+  "description": "A multi-page static boilerplate using Gatsby and TypeScript, including authentication with Netlify's identity platform, subscriptions with Stripe, and customer data handling with Fauna.",
   "version": "1.0.0",
   "private": true,
   "author": "Chris Frewin <frewin.christopher@gmail.com>",
@@ -12,7 +12,7 @@
   "license": "MIT",
   "main": "n/a",
   "scripts": {
-    "build": "gatsby build",
+    "build": "cd functions/ && npm install && cd .. && gatsby build",
     "clean": "rimraf public",
     "deploy": "gatsby build --prefix-paths && gh-pages -d public",
     "dev": "gatsby develop",

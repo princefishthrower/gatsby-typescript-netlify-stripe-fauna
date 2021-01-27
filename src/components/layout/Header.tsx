@@ -10,6 +10,7 @@ export interface IHeaderProps {
 
 export default function Header(props: IHeaderProps) {
   const identity = useNetlifyIdentity(Constants.NETLIFY_URL)
+  console.log(identity)
   const { siteTitle } = props
   const [showDialog, setShowDialog] = useState(false)
   return (

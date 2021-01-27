@@ -1,13 +1,13 @@
 import * as React from 'react'
 import { Link } from 'gatsby'
-import IndexLayout from '../layouts'
+import Layout from '../components/Layout'
 
 const PageTwo = () => (
-  <IndexLayout>
+  <Layout>
     <h1>Here is page two</h1>
     <p>Yay!</p>
     <Link to="/a-markdown-page/">Go to markdown page</Link>
-  </IndexLayout>
+  </Layout>
 )
 
 export default PageTwo

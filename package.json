@@ -27,6 +27,9 @@
   },
   "dependencies": {
     "@emotion/core": "^10.0.28",
+    "@reach/dialog": "^0.13.0",
+    "@reach/tabs": "^0.13.0",
+    "@reach/visually-hidden": "^0.13.0",
     "babel-plugin-styled-components": "^1.10.1",
     "classnames": "^2.2.6",
     "gatsby": "^2.10.0",
@@ -55,6 +58,7 @@
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
     "react-netlify-identity": "^0.2.5",
+    "react-netlify-identity-widget": "^0.2.7",
     "typescript": "^3.5.2"
   },
   "devDependencies": {

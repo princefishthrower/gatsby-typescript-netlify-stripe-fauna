@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { graphql } from 'gatsby'
-import IndexLayout from '../layouts'
+import Layout from '../components/Layout'
 
 interface PageTemplateProps {
   data: {
@@ -25,11 +25,11 @@ interface PageTemplateProps {
 }
 
 const PageTemplate: React.FC<PageTemplateProps> = ({ data }) => (
-  <IndexLayout>
+  <Layout>
     <h1>{data.markdownRemark.frontmatter.title}</h1>
     {/* eslint-disable-next-line react/no-danger */}
     <div dangerouslySetInnerHTML={{ __html: data.markdownRemark.html }} />
-  </IndexLayout>
+  </Layout>
 )
 
 export default PageTemplate

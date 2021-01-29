@@ -1,16 +1,22 @@
-export const navigateToManageStripeSubscription = async (token: string) => {
-  // otherwise call function to create link
-  try {
-    const response = await fetch('/.netlify/functions/create-manage-link', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    const link = await response.json()
-    window.location.href = link
-  } catch (err) {
-    // TODO error toast with user friendly error
+import { refreshJwt } from './NetlifyIdentityHelpers'
+
+export const navigateToManageStripeSubscription = async () => {
+  const token = await refreshJwt()
+  console.log(token)
+  if (token) {
+    // otherwise call function to create link
+    try {
+      const response = await fetch('/.netlify/functions/create-manage-link', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      const link = await response.json()
+      window.location.href = link
+    } catch (err) {
+      // TODO error toast with user friendly error
+    }
   }
 }
 

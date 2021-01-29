@@ -19,16 +19,20 @@ netlifyIdentity.on('login', (user: User) => {
 })
 
 netlifyIdentity.on('logout', () => {
-  store.dispatch(resetNetlifyState())
+  store.dispatch(setUser(undefined))
   netlifyIdentity.close()
   ToastHelpers.showSimple('👍 Successfully logged out. 👍')
 })
 
-netlifyIdentity.on('error', err => {
-  ToastHelpers.showSimple(
-    '😱 Uh oh! There was an error with Netlify Identity! (The login and authentication service.) Please try again and contact us if the error continues! 😱'
-  )
-})
+// netlifyIdentity.on('error', err => {
+//   ToastHelpers.showSimple(
+//     '😱 Uh oh! There was an error with Netlify Identity! (The login and authentication service.) Please try again and contact us if the error continues! 😱'
+//   )
+// })
+
+export const init = () => {
+  netlifyIdentity.init()
+}
 
 // open the modal to the login tab
 export const login = () => {
@@ -45,6 +49,9 @@ export const signup = () => {
   netlifyIdentity.open('signup')
 }
 
+export const refreshJwt = async () => {
+  return await netlifyIdentity.refresh()
+}
 // Other goodies not yet used
 // netlifyIdentity.on('init', user => console.log('init', user))
 // netlifyIdentity.on('open', () => console.log('Widget opened'))

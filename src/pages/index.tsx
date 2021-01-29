@@ -10,10 +10,10 @@ import { ToastHelpers } from '../helpers/ToastHelpers'
 import { graphql, Link } from 'gatsby'
 import { Loader } from '../components/loader/Loader'
 import { redirectToCheckout } from '../helpers/StripeHelpers'
+import { refreshJwt } from '../helpers/NetlifyIdentityHelpers'
 
 const Index = ({ data }) => {
   const netlify = useSelector((state: AppState) => state.netlify)
-  console.log(netlify)
   const { user, isInitFinished } = netlify
 
   const [tierStates, setTierStates] = useState<
@@ -38,12 +38,12 @@ const Index = ({ data }) => {
     })
   )
 
-  useEffect(() => {
-    Constants.TIERS.forEach(async type => {
-      try {
-        if (user && user.token) {
-          const data = await getSubscriptionContent(user.token.access_token, type)
-          console.log(data)
+  const getTierData = async () => {
+    if (user) {
+      const token = await refreshJwt()
+      Constants.TIERS.forEach(async type => {
+        try {
+          const data = await getSubscriptionContent(token, type)
           const currentTier = tierStates.filter(tierData => tierData.tierName === type)
           const otherTiers = tierStates.filter(tierData => tierData.tierName !== type)
           if (currentTier.length > 0) {
@@ -52,11 +52,15 @@ const Index = ({ data }) => {
             currentTier[0].tierData.upgradeTo = data.upgradeTo
             setTierStates([...otherTiers, ...currentTier])
           }
+        } catch (error) {
+          ToastHelpers.showSimple('Oh no! There was an error loading content!')
         }
-      } catch (error) {
-        ToastHelpers.showSimple('Oh no, there was an error loading content.')
-      }
-    })
+      })
+    }
+  }
+
+  useEffect(() => {
+    getTierData()
   }, [user])
 
   const getRestOfPageContent = () => {
@@ -65,7 +69,7 @@ const Index = ({ data }) => {
     }
 
     if (isInitFinished && !user) {
-      return <>You need to log in to view this content.</>
+      return <b>You need to log in to view the rest of the content on this page.</b>
     }
 
     return (

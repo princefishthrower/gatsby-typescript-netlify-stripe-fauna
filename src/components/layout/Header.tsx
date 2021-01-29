@@ -3,7 +3,7 @@ import { Link } from 'gatsby'
 import { useSelector } from 'react-redux'
 import { navigateToManageStripeSubscription } from '../../helpers/NetlifyServerlessFunctionHelpers'
 import { AppState } from '../../store/types'
-import { login, logout } from '../../helpers/NetlifyIdentityHelpers'
+import { init, login, logout } from '../../helpers/NetlifyIdentityHelpers'
 import netlifyIdentity from 'netlify-identity-widget'
 import { Loader } from '../loader/Loader'
 
@@ -18,9 +18,10 @@ export default function Header(props: IHeaderProps) {
 
   useEffect(() => {
     if (!isInitFinished) {
-      netlifyIdentity.init()
+      console.log('calling init')
+      init()
     }
-  })
+  }, [isInitFinished])
 
   const getHeaderContent = () => {
     if (!isInitFinished) {
@@ -28,20 +29,16 @@ export default function Header(props: IHeaderProps) {
     }
 
     if (user) {
-      const { user_metadata, token } = user
+      const { user_metadata } = user
       const { full_name, avatar_url } = user_metadata
-      if (token) {
-        const { access_token } = token
-        console.log(avatar_url)
-        return (
-          <>
-            <p>You are logged in as {full_name}</p>
-            {avatar_url && <img src={avatar_url} />}
-            <button onClick={logout}>Log out</button>
-            <button onClick={() => navigateToManageStripeSubscription(access_token)}>Manage Subscription</button>
-          </>
-        )
-      }
+      return (
+        <>
+          <p>You are logged in as {full_name}</p>
+          {avatar_url && <img src={avatar_url} />}
+          <button onClick={logout}>Log out</button>
+          <button onClick={() => navigateToManageStripeSubscription(user)}>Manage Subscription</button>
+        </>
+      )
     } else {
       return <button onClick={login}>Log In</button>
     }

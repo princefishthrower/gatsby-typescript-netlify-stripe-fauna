@@ -1,0 +1,48 @@
+// toastify styles
+.Toastify__progress-bar--default {
+  background: black !important;
+}
+
+.Toastify__toast-container {
+  border-radius: calc(0.25rem - 1px);
+}
+
+.Toastify__toast-body {
+  color: black;
+}
+
+.Toastify__toast {
+  max-height: 50px;
+  &--error {
+    background-color: #ed7a6e;
+  }
+  &--error,
+  &--success,
+  &--default {
+    transition: background-color 1000ms, max-height 1000ms;
+    max-height: 500px;
+  }
+}
+
+.Toastify {
+  transition: background-color 250ms;
+
+  &.active {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  &.closing {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0);
+  }
+}

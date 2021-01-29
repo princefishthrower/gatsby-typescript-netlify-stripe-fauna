@@ -1,12 +1,20 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { useNetlifyIdentity } from 'react-netlify-identity-widget'
+import { useSelector } from 'react-redux'
 import Layout from '../components/layout/Layout'
 import Constants from '../constants/Constants'
+import { AppState } from '../store/types'
+import { getSubscriptionContent } from '../helpers/NetlifyServerlessFunctionHelpers'
+import { ToastHelpers } from '../helpers/ToastHelpers'
+import { graphql, Link } from 'gatsby'
+import { Loader } from '../components/loader/Loader'
+import { redirectToCheckout } from '../helpers/StripeHelpers'
 
-export default function IndexPage() {
-  const identity = useNetlifyIdentity(Constants.NETLIFY_URL)
+const Index = ({ data }) => {
+  const netlify = useSelector((state: AppState) => state.netlify)
+  console.log(netlify)
+  const { user, isInitFinished } = netlify
 
   const [tierStates, setTierStates] = useState<
     Array<{
@@ -14,6 +22,7 @@ export default function IndexPage() {
       tierData: {
         message: string
         src: string
+        upgradeTo: string
       }
     }>
   >(
@@ -22,67 +31,89 @@ export default function IndexPage() {
         tierName,
         tierData: {
           message: 'Log in to continue',
-          src: ''
+          src: '',
+          upgradeTo: ''
         }
       }
     })
   )
-  const getSubscriptionContent = (token: string) => {
+
+  useEffect(() => {
     Constants.TIERS.forEach(async type => {
       try {
-        const response = await fetch('/.netlify/functions/get-protected-content', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ type })
-        })
-        const currentTier = tierStates.filter(tierData => tierData.tierName === type)
-        const otherTiers = tierStates.filter(tierData => tierData.tierName !== type)
-        if (response.status === 402) {
+        if (user && user.token) {
+          const data = await getSubscriptionContent(user.token.access_token, type)
+          console.log(data)
+          const currentTier = tierStates.filter(tierData => tierData.tierName === type)
+          const otherTiers = tierStates.filter(tierData => tierData.tierName !== type)
           if (currentTier.length > 0) {
-            currentTier[0].tierData.message = 'Subscription required!'
-            setTierStates([...otherTiers, ...currentTier])
-          }
-        } else {
-          if (currentTier.length > 0) {
-            const data = await response.json()
             currentTier[0].tierData.message = data.alt
             currentTier[0].tierData.src = data.src
+            currentTier[0].tierData.upgradeTo = data.upgradeTo
             setTierStates([...otherTiers, ...currentTier])
           }
         }
-      } catch (e) {
-        // TODO: Toast
+      } catch (error) {
+        ToastHelpers.showSimple('Oh no, there was an error loading content.')
       }
     })
-  }
+  }, [user])
 
-  useEffect(() => {
-    if (identity && identity.user) {
-      getSubscriptionContent(identity.user.token.access_token)
+  const getRestOfPageContent = () => {
+    if (!isInitFinished) {
+      return <Loader />
     }
-  }, [])
 
-  return (
-    <Layout>
-      <h2>Payment tiers:</h2>
+    if (isInitFinished && !user) {
+      return <>You need to log in to view this content.</>
+    }
+
+    return (
       <>
+        <h2>Payment tiers:</h2>
+
         {tierStates.map(tierState => {
-          return tierState.tierData.src.length > 0 ? (
-            <>
+          return (
+            <React.Fragment key={tierState.tierName}>
               <h3>{tierState.tierName}</h3>
               <p>{tierState.tierData.message}</p>
               <img src={tierState.tierData.src} />
-            </>
-          ) : (
-            <>
-              <h3>{tierState.tierName}</h3>
-              <p>{tierState.tierData.message}</p>
-            </>
+              {tierState.tierData.upgradeTo && (
+                <>
+                  <button onClick={() => redirectToCheckout(`${tierState.tierData.upgradeTo}_monthly`)}>
+                    Upgrade to {tierState.tierData.upgradeTo} (monthly)!
+                  </button>
+                  or
+                  <button onClick={() => redirectToCheckout(`${tierState.tierData.upgradeTo}_annual`)}>
+                    Upgrade to {tierState.tierData.upgradeTo} (annual)!
+                  </button>
+                </>
+              )}
+            </React.Fragment>
           )
         })}
       </>
+    )
+  }
+
+  return (
+    <Layout>
+      <h1>Index Page</h1>
+      <p>This is the index.tsx page, i.e. the root page that would render if visiting the site.</p>
+      <Link to="/page-two/">Go to a different page</Link>
+      <p>{data.site.siteMetadata.description}</p>
+      {getRestOfPageContent()}
     </Layout>
   )
 }
+
+export const query = graphql`
+  query HomePageQuery {
+    site {
+      siteMetadata {
+        description
+      }
+    }
+  }
+`
+export default Index

@@ -41,11 +41,13 @@ const Index = ({ data }) => {
   const getTierData = async () => {
     if (user) {
       const token = await refreshJwt()
-      Constants.TIERS.forEach(async type => {
+      Constants.TIERS.forEach(async tierName => {
         try {
-          const data = await getSubscriptionContent(token, type)
-          const currentTier = tierStates.filter(tierData => tierData.tierName === type)
-          const otherTiers = tierStates.filter(tierData => tierData.tierName !== type)
+          const data = await getSubscriptionContent(token, tierName)
+          console.log(tierName)
+          console.log(data)
+          const currentTier = tierStates.filter(tierData => tierData.tierName === tierName)
+          const otherTiers = tierStates.filter(tierData => tierData.tierName !== tierName)
           if (currentTier.length > 0) {
             currentTier[0].tierData.message = data.alt
             currentTier[0].tierData.src = data.src

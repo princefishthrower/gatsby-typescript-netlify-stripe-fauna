@@ -53,7 +53,7 @@ exports.handler = async ({ body, headers }, context) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ test: 'am i retarded' })
+      body: JSON.stringify({ received: true, roleSet: role })
     }
   } catch (err) {
     return {

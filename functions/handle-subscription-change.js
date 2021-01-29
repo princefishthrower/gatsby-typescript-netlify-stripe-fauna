@@ -38,7 +38,7 @@ exports.handler = async ({ body, headers }, context) => {
 
     // send a call to the Netlify Identity admin API to update the user role
     const { identity } = context.clientContext
-    const response = await fetch(`${identity.url}/admin/users/${netlifyID}`, {
+    await fetch(`${identity.url}/admin/users/${netlifyID}`, {
       method: 'PUT',
       headers: {
         // note that this is a special admin token for the Identity API
@@ -51,10 +51,9 @@ exports.handler = async ({ body, headers }, context) => {
       })
     })
 
-    const data = response.json()
     return {
       statusCode: 200,
-      body: JSON.stringify({ received: true, data })
+      body: JSON.stringify({ test: 'am i retarded' })
     }
   } catch (err) {
     return {

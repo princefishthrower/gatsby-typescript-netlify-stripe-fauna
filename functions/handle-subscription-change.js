@@ -1,20 +1,16 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const fetch = require('node-fetch');
-const { faunaFetch } = require('./utils/fauna');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const fetch = require('node-fetch')
+const { faunaFetch } = require('./utils/fauna')
 
 exports.handler = async ({ body, headers }, context) => {
   try {
     // make sure this event was sent legitimately.
-    const stripeEvent = stripe.webhooks.constructEvent(
-      body,
-      headers['stripe-signature'],
-      process.env.STRIPE_WEBHOOK_SECRET,
-    );
+    const stripeEvent = stripe.webhooks.constructEvent(body, headers['stripe-signature'], process.env.STRIPE_WEBHOOK_SECRET)
 
     // bail if this is not a subscription update event
-    if (stripeEvent.type !== 'customer.subscription.updated') return;
+    if (stripeEvent.type !== 'customer.subscription.updated') return
 
-    const subscription = stripeEvent.data.object;
+    const subscription = stripeEvent.data.object
 
     const result = await faunaFetch({
       query: `
@@ -25,11 +21,11 @@ exports.handler = async ({ body, headers }, context) => {
           }
         `,
       variables: {
-        stripeID: subscription.customer,
-      },
-    });
+        stripeID: subscription.customer
+      }
+    })
 
-    const { netlifyID } = result.data.getUserByStripeID;
+    const { netlifyID } = result.data.getUserByStripeID
 
     // take the first word of the plan name and use it as the role
 
@@ -38,31 +34,32 @@ exports.handler = async ({ body, headers }, context) => {
     // const role = plan.split(' ')[0].toLowerCase();
 
     // NEW CODE - the role IS the nickname!
-    const role = subscription.items.data[0].plan.nickname;
+    const role = subscription.items.data[0].plan.nickname
 
     // send a call to the Netlify Identity admin API to update the user role
-    const { identity } = context.clientContext;
-    await fetch(`${identity.url}/admin/users/${netlifyID}`, {
+    const { identity } = context.clientContext
+    const response = await fetch(`${identity.url}/admin/users/${netlifyID}`, {
       method: 'PUT',
       headers: {
         // note that this is a special admin token for the Identity API
-        Authorization: `Bearer ${identity.token}`,
+        Authorization: `Bearer ${identity.token}`
       },
       body: JSON.stringify({
         app_metadata: {
-          roles: [role],
-        },
-      }),
-    });
+          roles: [role]
+        }
+      })
+    })
 
+    const data = response.json()
     return {
       statusCode: 200,
-      body: JSON.stringify({ received: true }),
-    };
+      body: JSON.stringify({ received: true, data })
+    }
   } catch (err) {
     return {
       statusCode: 400,
-      body: `Webhook Error: ${err.message}`,
-    };
+      body: `Webhook Error: ${err.message}`
+    }
   }
-};
+}

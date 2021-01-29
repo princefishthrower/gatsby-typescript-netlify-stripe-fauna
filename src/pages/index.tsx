@@ -11,9 +11,9 @@ import { Loader } from '../components/loader/Loader'
 import { shouldForceRefresh } from '../helpers/UrlHelpers'
 import { getSubscriptionContent, navigateToStripeCheckout } from '../helpers/NetlifyServerlessFunctionHelpers'
 
-const Index = ({ location, data }) => {
-  const forceRefresh = shouldForceRefresh(location.search)
-
+const Index = ({ data }) => {
+  const search = typeof window !== 'undefined' ? window.location.search : ''
+  const forceRefresh = shouldForceRefresh(search)
   const netlify = useSelector((state: AppState) => state.netlify)
   const { user, isInitFinished } = netlify
 

@@ -12,8 +12,8 @@ export interface IHeaderProps {
 }
 
 export default function Header(props: IHeaderProps) {
-  const forceRefresh = shouldForceRefresh(location.search)
-  console.log(forceRefresh)
+  const search = typeof window !== 'undefined' ? window.location.search : ''
+  const forceRefresh = shouldForceRefresh(search)
   const { siteTitle } = props
   const netlify = useSelector((state: AppState) => state.netlify)
   const { user, isInitFinished } = netlify

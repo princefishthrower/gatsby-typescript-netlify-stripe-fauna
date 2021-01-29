@@ -13,9 +13,7 @@ export interface IHeaderProps {
 
 export default function Header(props: IHeaderProps) {
   const { siteTitle } = props
-
   const netlify = useSelector((state: AppState) => state.netlify)
-
   const { user, isInitFinished } = netlify
 
   useEffect(() => {

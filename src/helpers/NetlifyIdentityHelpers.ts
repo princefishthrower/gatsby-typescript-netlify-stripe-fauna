@@ -1,6 +1,6 @@
 import { ToastHelpers } from './ToastHelpers'
 import netlifyIdentity, { User } from 'netlify-identity-widget'
-import { resetNetlifyState, setIsInitFinished, setUser } from '../store/netlify/actions'
+import { setIsInitFinished, setUser } from '../store/netlify/actions'
 import store from '../store'
 
 netlifyIdentity.on('init', (user: User | null) => {
@@ -49,8 +49,8 @@ export const signup = () => {
   netlifyIdentity.open('signup')
 }
 
-export const refreshJwt = async () => {
-  return await netlifyIdentity.refresh()
+export const refreshJwt = async (forceRefresh: boolean = false) => {
+  return await netlifyIdentity.refresh(forceRefresh)
 }
 // Other goodies not yet used
 // netlifyIdentity.on('init', user => console.log('init', user))

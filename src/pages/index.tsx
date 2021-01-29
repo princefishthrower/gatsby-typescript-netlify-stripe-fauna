@@ -5,14 +5,15 @@ import { useSelector } from 'react-redux'
 import Layout from '../components/layout/Layout'
 import Constants from '../constants/Constants'
 import { AppState } from '../store/types'
-import { getSubscriptionContent } from '../helpers/NetlifyServerlessFunctionHelpers'
 import { ToastHelpers } from '../helpers/ToastHelpers'
 import { graphql, Link } from 'gatsby'
 import { Loader } from '../components/loader/Loader'
-import { redirectToCheckout } from '../helpers/StripeHelpers'
-import { refreshJwt } from '../helpers/NetlifyIdentityHelpers'
+import { shouldForceRefresh } from '../helpers/UrlHelpers'
+import { getSubscriptionContent, navigateToStripeCheckout } from '../helpers/NetlifyServerlessFunctionHelpers'
 
-const Index = ({ data }) => {
+const Index = ({ location, data }) => {
+  const forceRefresh = shouldForceRefresh(location.search)
+
   const netlify = useSelector((state: AppState) => state.netlify)
   const { user, isInitFinished } = netlify
 
@@ -40,12 +41,9 @@ const Index = ({ data }) => {
 
   const getTierData = async () => {
     if (user) {
-      const token = await refreshJwt()
       Constants.TIERS.forEach(async tierName => {
         try {
-          const data = await getSubscriptionContent(token, tierName)
-          console.log(tierName)
-          console.log(data)
+          const data = await getSubscriptionContent(tierName, forceRefresh)
           const currentTier = tierStates.filter(tierData => tierData.tierName === tierName)
           const otherTiers = tierStates.filter(tierData => tierData.tierName !== tierName)
           if (currentTier.length > 0) {
@@ -86,11 +84,11 @@ const Index = ({ data }) => {
               <img src={tierState.tierData.src} />
               {tierState.tierData.upgradeTo && (
                 <>
-                  <button onClick={() => redirectToCheckout(`${tierState.tierData.upgradeTo}_monthly`)}>
+                  <button onClick={() => navigateToStripeCheckout(`${tierState.tierData.upgradeTo}_monthly`)}>
                     Upgrade to {tierState.tierData.upgradeTo} (monthly)!
                   </button>
                   or
-                  <button onClick={() => redirectToCheckout(`${tierState.tierData.upgradeTo}_annual`)}>
+                  <button onClick={() => navigateToStripeCheckout(`${tierState.tierData.upgradeTo}_annual`)}>
                     Upgrade to {tierState.tierData.upgradeTo} (annual)!
                   </button>
                 </>

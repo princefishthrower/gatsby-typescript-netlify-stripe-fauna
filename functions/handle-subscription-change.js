@@ -1,6 +1,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const fetch = require('node-fetch')
 const { faunaFetch } = require('./utils/fauna')
+const { sendSlackMessage } = require('./utils/slack')
 
 exports.handler = async ({ body, headers }, context) => {
   try {
@@ -50,6 +51,8 @@ exports.handler = async ({ body, headers }, context) => {
         }
       })
     })
+
+    sendSlackMessage(`Setting role to '${role}'!`)
 
     return {
       statusCode: 200,

@@ -21,7 +21,7 @@ exports.handler = async (event, context) => {
 
   const link = await stripe.billingPortal.sessions.create({
     customer: stripeID,
-    return_url: process.env.URL
+    return_url: `${process.env.URL}?from=subscription-management`
   })
 
   return {

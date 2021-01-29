@@ -27,6 +27,21 @@ You NEED to do the following first:
 
 6. Enable client-only integration for stripe at https://dashboard.stripe.com/account/checkout/settings and add your live domain you'll be selling at
 
+## What's Inside?
+
+-Gatsby for super speedy static page generating
+-TypeScript for type safety :smile:
+-Netlify Identity Widget ([netlify-identity-widget](https://github.com/netlify/netlify-identity-widget)) for authentication
+-Redux for state management of Netlify User (logging in and logging in events) (see `gatsby-browser.js` and `gatsby-ssr.js` to see how to add a Redux store to a static site :smile:)
+-React Toastify ([react-toastify](https://github.com/fkhadra/react-toastify)) for fancy popups and notifications for the user
+
+Stripe for payment plan management and checkout:
+You'll see there are two ways for a user to change their subscription:
+
+1. In the header there is a link to the Stripe product management, where you can select from all available plans
+
+2. Next to each tier that is not yet unlocked is a pair of buttons, one for the monthly subscription to that tier, and the other to that annual subscription of that tier.
+
 ## Other Notes
 
 This boilerplate has no styles. That's the point. It's a boilerplate. :joy: Enjoy styling it anyway you want!

@@ -2,7 +2,9 @@
 
 A full, multi-page static boilerplate using Gatsby, TypeScript React, and Redux, including authentication with Netlify's identity platform, subscriptions with Stripe, and customer data handling with Fauna.
 
-## What You Need To Do For this Boilerplate to Work
+This example site is live at [https://gatsby-typescript-netlify-stripe-fauna.netlify.app/](https://gatsby-typescript-netlify-stripe-fauna.netlify.app/)
+
+# What You Need to Do to Get this Boilerplate to Work
 
 This boilerplate WON'T work with just a `npm install` and `npm run start`!
 
@@ -27,13 +29,13 @@ You NEED to do the following first:
 
 6. Enable client-only integration for stripe at https://dashboard.stripe.com/account/checkout/settings and add your live domain you'll be selling at
 
-## What's Inside?
+# What's Inside?
 
--Gatsby for super speedy static page generating
--TypeScript for type safety :smile:
--Netlify Identity Widget ([netlify-identity-widget](https://github.com/netlify/netlify-identity-widget)) for authentication
--Redux for state management of Netlify User (logging in and logging in events) (see `gatsby-browser.js` and `gatsby-ssr.js` to see how to add a Redux store to a static site :smile:)
--React Toastify ([react-toastify](https://github.com/fkhadra/react-toastify)) for fancy popups and notifications for the user
+- Gatsby for super speedy static page generating
+- TypeScript for type safety :smile:
+- Netlify Identity Widget ([netlify-identity-widget](https://github.com/netlify/netlify-identity-widget)) for authentication
+- Redux for state management of Netlify User (logging in and logging in events) (see `gatsby-browser.js` and `gatsby-ssr.js` to see how to add a Redux store to a static site :smile:)
+- React Toastify ([react-toastify](https://github.com/fkhadra/react-toastify)) for fancy popups and notifications for the user
 
 Stripe for payment plan management and checkout:
 You'll see there are two ways for a user to change their subscription:
@@ -42,8 +44,10 @@ You'll see there are two ways for a user to change their subscription:
 
 2. Next to each tier that is not yet unlocked is a pair of buttons, one for the monthly subscription to that tier, and the other to that annual subscription of that tier.
 
-## Other Notes
+# Other Notes
 
-This boilerplate has no styles. That's the point. It's a boilerplate. :joy: Enjoy styling it anyway you want!
+This boilerplate has absolutely no styling! That's the point. It's a boilerplate. :joy: Enjoy styling it anyway you want!
+
+# Credit Where Credit is Due
 
 This blog is a heavily refactored version of the ["Subscription Management in Jamstack Apps" tutorial](https://github.com/stripe-samples/netlify-stripe-subscriptions) from Netlify itself. All credit to Jason Lengstorf and Thor 雷神.

@@ -50,10 +50,10 @@ export const signup = () => {
 }
 
 export const refreshJwt = async (forceRefresh: boolean = false) => {
-  console.log('force is:' + forceRefresh)
   return await netlifyIdentity.refresh(forceRefresh)
 }
-// Other goodies not yet used
+
+// Other goodies not used
 // netlifyIdentity.on('init', user => console.log('init', user))
 // netlifyIdentity.on('open', () => console.log('Widget opened'))
 // netlifyIdentity.on('close', () => console.log('Widget closed'))

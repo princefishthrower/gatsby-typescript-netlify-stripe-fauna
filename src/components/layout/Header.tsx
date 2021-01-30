@@ -5,18 +5,18 @@ import { navigateToManageStripeSubscription } from '../../helpers/NetlifyServerl
 import { AppState } from '../../store/types'
 import { init, login, logout } from '../../helpers/NetlifyIdentityHelpers'
 import { Loader } from '../loader/Loader'
-import { shouldForceRefresh } from '../../helpers/UrlHelpers'
+import { setIsRedirectingToManage } from '../../store/netlify/actions'
 
 export interface IHeaderProps {
   siteTitle: string
 }
 
 export default function Header(props: IHeaderProps) {
-  const search = typeof window !== 'undefined' ? window.location.search : ''
-  const forceRefresh = shouldForceRefresh(search)
   const { siteTitle } = props
-  const netlify = useSelector((state: AppState) => state.netlify)
-  const { user, isInitFinished } = netlify
+  const { user, isInitFinished, isRedirectingToManage } = useSelector((state: AppState) => state.netlify)
+
+  console.log('user is')
+  console.log(user)
 
   useEffect(() => {
     if (!isInitFinished) {
@@ -30,14 +30,26 @@ export default function Header(props: IHeaderProps) {
     }
 
     if (user) {
-      const { user_metadata } = user
+      const { user_metadata, app_metadata } = user
       const { full_name, avatar_url } = user_metadata
+      const { roles } = app_metadata
       return (
         <>
           <p>You are logged in as {full_name}</p>
+          <p>
+            Your current subscription plan is: <b>{roles.join(' ')}</b>
+          </p>
           {avatar_url && <img src={avatar_url} />}
           <button onClick={logout}>Log out</button>
-          <button onClick={() => navigateToManageStripeSubscription(forceRefresh)}>Manage Subscription</button>
+          <button
+            disabled={isRedirectingToManage}
+            onClick={() => {
+              setIsRedirectingToManage(true)
+              navigateToManageStripeSubscription()
+            }}
+          >
+            Manage Subscription
+          </button>
         </>
       )
     } else {

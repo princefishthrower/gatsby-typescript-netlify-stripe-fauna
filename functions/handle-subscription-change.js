@@ -52,16 +52,15 @@ exports.handler = async ({ body, headers }, context) => {
       })
     })
 
-    sendSlackMessage(`Setting role to '${role}'!`)
-
     return {
       statusCode: 200,
       body: JSON.stringify({ received: true, roleSet: role })
     }
   } catch (err) {
+    sendSlackMessage(`Stripe handle subscription change webhook wrror: ${err.message}`)
     return {
       statusCode: 400,
-      body: `Webhook Error: ${err.message}`
+      body: `Stripe handle subscription change webhook wrror: ${err.message}`
     }
   }
 }

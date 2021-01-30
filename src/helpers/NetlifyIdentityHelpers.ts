@@ -1,21 +1,20 @@
 import { ToastHelpers } from './ToastHelpers'
-import netlifyIdentity, { User } from 'netlify-identity-widget'
+import netlifyIdentity from 'netlify-identity-widget'
 import { setIsInitFinished, setUser } from '../store/netlify/actions'
 import store from '../store'
+import { clearNavigationParamFromWindow, isNavigationFromSubscriptionSite } from './UrlSearchParamHelpers'
+import { sleep } from '../utils/sleep'
+import INetlifyUser from '../interfaces/INetlifyUser'
+import jwtDecode from 'jwt-decode'
 
-netlifyIdentity.on('init', (user: User | null) => {
+netlifyIdentity.on('init', () => {
+  console.log('netlify initted!')
   store.dispatch(setIsInitFinished())
-  if (user) {
-    store.dispatch(setUser(user))
-  }
 })
 
 // events
-netlifyIdentity.on('login', (user: User) => {
-  store.dispatch(setUser(user))
-  netlifyIdentity.close()
-  const welcomeMessage = user.user_metadata.full_name ? `😄 Welcome back, ${user.user_metadata.full_name}! 😄` : '😄 Welcome back! 😄'
-  ToastHelpers.showSimple(welcomeMessage)
+netlifyIdentity.on('login', () => {
+  onLogin()
 })
 
 netlifyIdentity.on('logout', () => {
@@ -31,6 +30,7 @@ netlifyIdentity.on('logout', () => {
 // })
 
 export const init = () => {
+  console.log('calling init')
   netlifyIdentity.init()
 }
 
@@ -49,8 +49,43 @@ export const signup = () => {
   netlifyIdentity.open('signup')
 }
 
-export const refreshJwt = async (forceRefresh: boolean = false) => {
-  return await netlifyIdentity.refresh(forceRefresh)
+const onLogin = async () => {
+  const token = await getToken()
+  const user = convertNetlifyTokenToUserObject(token)
+  store.dispatch(setUser(user))
+  netlifyIdentity.close()
+  const welcomeMessage = user.user_metadata.full_name ? `😄 Welcome back, ${user.user_metadata.full_name}! 😄` : '😄 Welcome back! 😄'
+  ToastHelpers.showSimple(welcomeMessage)
+}
+
+const getToken = async (): Promise<string> => {
+  // check the window search params to see if we have returned from a path where the
+  // user's subscription state has changed
+  const shouldForceRefresh = isNavigationFromSubscriptionSite()
+  // if it is such a return, wait a few seconds for the data in identity to propagate
+  if (shouldForceRefresh) {
+    ToastHelpers.showSimple('✅ Checking for any change to your subscription...')
+    await sleep(5000)
+    clearNavigationParamFromWindow()
+    ToastHelpers.showSimple('👍 All set! Enjoy!')
+  }
+  // then refresh the token!
+  return await netlifyIdentity.refresh(shouldForceRefresh)
+}
+
+const convertNetlifyTokenToUserObject = (token: string): INetlifyUser => {
+  const data = jwtDecode<INetlifyUser>(token)
+  console.log(data)
+  return {
+    token,
+    user_metadata: {
+      avatar_url: data.user_metadata.avatar_url ? data.user_metadata.avatar_url : '',
+      full_name: data.user_metadata.full_name
+    },
+    app_metadata: {
+      roles: data.app_metadata.roles
+    }
+  }
 }
 
 // Other goodies not used

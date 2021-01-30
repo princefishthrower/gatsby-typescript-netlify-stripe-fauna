@@ -1,5 +1,3 @@
-const { sendSlackMessage } = require('./utils/slack')
-
 const content = {
   free: {
     src: 'https://images.unsplash.com/photo-1550159930-40066082a4fc?auto=format&fit=crop&w=600&h=600&q=80',
@@ -30,8 +28,6 @@ const content = {
 exports.handler = async (event, context) => {
   const { type } = JSON.parse(event.body)
   const { user } = context.clientContext
-  sendSlackMessage('Server side user object:')
-  sendSlackMessage(JSON.stringify(user))
   if (user) {
     const roles = user.app_metadata.roles
     const { allowedRoles } = content[type]

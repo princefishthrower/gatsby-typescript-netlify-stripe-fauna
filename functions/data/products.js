@@ -1,4 +1,4 @@
-const products = [
+module.exports = [
   {
     tierName: 'premium_annual',
     price_id: 'price_1ICAzEJVCNlOdZ19sgUGZYrK'
@@ -20,4 +20,3 @@ const products = [
     price_id: 'price_1ICAvwJVCNlOdZ19rUPHmsuh'
   }
 ]
-export default products

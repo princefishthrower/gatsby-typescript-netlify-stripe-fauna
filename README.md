@@ -22,8 +22,10 @@ You NEED to do the following first:
 
    - FAUNA_SERVER_KEY - Your secret key to your Fauna DB instance from step 1.
    - STRIPE_FREE_PRICE_ID - The price ID of the free plan you created in step 2 (looks something like `price_blahblahblah` - note this is NOT the "product ID", but the "price ID")
-   - STRIPE_SECRET_KEY - Your secret API key from stripe (looks something like `sk_test_123120234232`) - again, make sure 'Viewing test data' is ACTIVE).
+   - STRIPE_SECRET_KEY - Your secret API key from stripe (looks something like `sk_test_blahblahblah`) - again, make sure 'Viewing test data' is ACTIVE).
+   - STRIPE_PUBLISHABLE_KEY - Your public API key from stripe (looks something like `pk_test_blahblahblah`) - again, make sure 'Viewing test data' is ACTIVE).
    - STRIPE_WEBHOOK_SECRET - The webhook signing secret from the webhook you created in step 3. (Again, make sure 'Viewing test data' is ACTIVE)
+   - SLACK_WEBHOOK_URL - if you want to get serverless functions with error logging to your slack, provide this key as well
 
 5. Fill out all the various price ids of your products in `data/products.ts`
 

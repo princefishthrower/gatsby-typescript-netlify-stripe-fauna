@@ -1,17 +1,20 @@
 import { loadStripe } from '@stripe/stripe-js'
-import { refreshJwt } from './NetlifyIdentityHelpers'
+import store from '../store'
+import { setIsRedirectingToManage } from '../store/netlify/actions'
+import { selectToken } from '../utils/selectToken'
 import { ToastHelpers } from './ToastHelpers'
 
-export const navigateToManageStripeSubscription = async (forceRefresh: boolean) => {
+export const navigateToManageStripeSubscription = async () => {
   // otherwise call function to create link
   try {
-    const token = await refreshJwt(forceRefresh)
+    const token = selectToken(store.getState())
     const response = await fetch('/.netlify/functions/stripe-manage-subscription', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
+    setIsRedirectingToManage(false)
     const link = await response.json()
     window.location.href = link
   } catch (err) {
@@ -19,20 +22,20 @@ export const navigateToManageStripeSubscription = async (forceRefresh: boolean) 
   }
 }
 
-export const navigateToStripeCheckout = async (price_id: string) => {
+export const navigateToStripeCheckout = async (tierName: string) => {
   try {
-    const token = await refreshJwt()
+    const token = selectToken(store.getState())
     const response = await fetch('/.netlify/functions/stripe-checkout', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
-        price_id
+        tierName
       })
     })
     const data = await response.json()
-    const stripe = await loadStripe(data.STRIPE_PUBLISHABLE_KEY)
+    const stripe = await loadStripe(data.publishableKey)
     if (stripe) {
       const { error } = await stripe.redirectToCheckout({
         sessionId: data.sessionId
@@ -48,9 +51,9 @@ export const navigateToStripeCheckout = async (price_id: string) => {
   }
 }
 
-export const getSubscriptionContent = async (type: string, forceRefresh: boolean) => {
+export const getSubscriptionContent = async (type: string) => {
   try {
-    const token = await refreshJwt(forceRefresh)
+    const token = selectToken(store.getState())
     const response = await fetch('/.netlify/functions/get-protected-content', {
       method: 'POST',
       headers: {

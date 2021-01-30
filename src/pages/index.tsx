@@ -8,14 +8,10 @@ import { AppState } from '../store/types'
 import { ToastHelpers } from '../helpers/ToastHelpers'
 import { graphql, Link } from 'gatsby'
 import { Loader } from '../components/loader/Loader'
-import { shouldForceRefresh } from '../helpers/UrlHelpers'
 import { getSubscriptionContent, navigateToStripeCheckout } from '../helpers/NetlifyServerlessFunctionHelpers'
 
 const Index = ({ data }) => {
-  const search = typeof window !== 'undefined' ? window.location.search : ''
-  const forceRefresh = shouldForceRefresh(search)
-  const netlify = useSelector((state: AppState) => state.netlify)
-  const { user, isInitFinished } = netlify
+  const { user, isInitFinished } = useSelector((state: AppState) => state.netlify)
 
   const [tierStates, setTierStates] = useState<
     Array<{
@@ -43,7 +39,7 @@ const Index = ({ data }) => {
     if (user) {
       Constants.TIERS.forEach(async tierName => {
         try {
-          const data = await getSubscriptionContent(tierName, forceRefresh)
+          const data = await getSubscriptionContent(tierName)
           const currentTier = tierStates.filter(tierData => tierData.tierName === tierName)
           const otherTiers = tierStates.filter(tierData => tierData.tierName !== tierName)
           if (currentTier.length > 0) {

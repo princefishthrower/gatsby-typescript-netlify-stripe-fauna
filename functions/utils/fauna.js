@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 
 exports.createUser = async (netlifyID, stripeID) => {
   try {
-    await createUserQuery(stripeID)
+    await createUserQuery(netlifyID, stripeID)
   } catch (error) {
     throw error
   }

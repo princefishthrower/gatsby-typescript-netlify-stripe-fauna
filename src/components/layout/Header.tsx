@@ -3,7 +3,7 @@ import { Link } from 'gatsby'
 import { useSelector } from 'react-redux'
 import { navigateToManageStripeSubscription } from '../../helpers/NetlifyServerlessFunctionHelpers'
 import { AppState } from '../../store/types'
-import { init, login, logout } from '../../helpers/NetlifyIdentityHelpers'
+import { init, login, logout, signUp } from '../../helpers/NetlifyIdentityHelpers'
 import { Loader } from '../loader/Loader'
 import { setIsRedirectingToManage } from '../../store/netlify/actions'
 
@@ -52,7 +52,12 @@ export default function Header(props: IHeaderProps) {
         </>
       )
     } else {
-      return <button onClick={login}>Log In</button>
+      return (
+        <>
+          <button onClick={signUp}>Sign up</button>
+          <button onClick={login}>Log in</button>
+        </>
+      )
     }
   }
 

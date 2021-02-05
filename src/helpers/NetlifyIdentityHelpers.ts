@@ -37,7 +37,7 @@ export const logout = () => {
 }
 
 // open the modal to the signup tab
-export const signup = () => {
+export const signUp = () => {
   netlifyIdentity.open('signup')
 }
 

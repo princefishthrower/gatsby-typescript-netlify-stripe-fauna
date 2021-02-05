@@ -15,9 +15,6 @@ export default function Header(props: IHeaderProps) {
   const { siteTitle } = props
   const { user, isInitFinished, isRedirectingToManage } = useSelector((state: AppState) => state.netlify)
 
-  console.log('user is')
-  console.log(user)
-
   useEffect(() => {
     if (!isInitFinished) {
       init()
@@ -35,7 +32,9 @@ export default function Header(props: IHeaderProps) {
       const { roles } = app_metadata
       return (
         <>
-          <p>You are logged in as {full_name}</p>
+          <p>
+            You are logged in as <b>{full_name}</b>
+          </p>
           <p>
             Your current subscription plan is: <b>{roles.join(' ')}</b>
           </p>

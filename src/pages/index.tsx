@@ -8,7 +8,11 @@ import { AppState } from '../store/types'
 import { ToastHelpers } from '../helpers/ToastHelpers'
 import { graphql, Link } from 'gatsby'
 import { Loader } from '../components/loader/Loader'
-import { getSubscriptionContent, navigateToStripeCheckout } from '../helpers/NetlifyServerlessFunctionHelpers'
+import {
+  getSubscriptionContent,
+  changeStripeSubscription,
+  navigateToManageStripeSubscription
+} from '../helpers/NetlifyServerlessFunctionHelpers'
 
 const Index = ({ data }) => {
   const { user, isInitFinished } = useSelector((state: AppState) => state.netlify)
@@ -49,7 +53,7 @@ const Index = ({ data }) => {
             setTierStates([...otherTiers, ...currentTier])
           }
         } catch (error) {
-          ToastHelpers.showSimple('Oh no! There was an error loading content!')
+          ToastHelpers.showSimple('😯 There was an error retrieving subscription content! Please refresh the page. 😯')
         }
       })
     }
@@ -79,15 +83,7 @@ const Index = ({ data }) => {
               <p>{tierState.tierData.message}</p>
               <img src={tierState.tierData.src} />
               {tierState.tierData.upgradeTo && (
-                <>
-                  <button onClick={() => navigateToStripeCheckout(`${tierState.tierData.upgradeTo}_monthly`)}>
-                    Upgrade to {tierState.tierData.upgradeTo} (monthly)!
-                  </button>
-                  or
-                  <button onClick={() => navigateToStripeCheckout(`${tierState.tierData.upgradeTo}_annual`)}>
-                    Upgrade to {tierState.tierData.upgradeTo} (annual)!
-                  </button>
-                </>
+                <button onClick={() => navigateToManageStripeSubscription()}>Upgrade to {tierState.tierData.upgradeTo}</button>
               )}
             </React.Fragment>
           )

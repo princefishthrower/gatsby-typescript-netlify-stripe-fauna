@@ -1,9 +1,9 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-const fetch = require('node-fetch')
-const { faunaFetch } = require('./utils/fauna')
+const { getNetlifyIdByStripeID } = require('./utils/fauna')
+const { updateUserRole } = require('./utils/updateUserRole')
 const { sendSlackMessage } = require('./utils/slack')
 
-exports.handler = async ({ body, headers }, context) => {
+exports.handler = async ({ body, headers }) => {
   try {
     // make sure this event was sent legitimately.
     const stripeEvent = stripe.webhooks.constructEvent(body, headers['stripe-signature'], process.env.STRIPE_WEBHOOK_SECRET)
@@ -11,46 +11,15 @@ exports.handler = async ({ body, headers }, context) => {
     // bail if this is not a subscription update event
     if (stripeEvent.type !== 'customer.subscription.updated') return
 
-    const subscription = stripeEvent.data.object
+    // Get stripeID and nickname from subscription - the role IS the nickname!
+    const stripeID = stripeEvent.data.object.customer
+    const role = stripeEvent.data.object.items.data[0].plan.nickname
 
-    const result = await faunaFetch({
-      query: `
-          query ($stripeID: ID!) {
-            getUserByStripeID(stripeID: $stripeID) {
-              netlifyID
-            }
-          }
-        `,
-      variables: {
-        stripeID: subscription.customer
-      }
-    })
+    // then get corresponding netlify ID from fauna
+    const netlifyID = await getNetlifyIdByStripeID(stripeID)
 
-    const { netlifyID } = result.data.getUserByStripeID
-
-    // take the first word of the plan name and use it as the role
-
-    // OLD CODE
-    // const plan = subscription.items.data[0].plan.nickname;
-    // const role = plan.split(' ')[0].toLowerCase();
-
-    // NEW CODE - the role IS the nickname!
-    const role = subscription.items.data[0].plan.nickname
-
-    // send a call to the Netlify Identity admin API to update the user role
-    const { identity } = context.clientContext
-    await fetch(`${identity.url}/admin/users/${netlifyID}`, {
-      method: 'PUT',
-      headers: {
-        // note that this is a special admin token for the Identity API
-        Authorization: `Bearer ${identity.token}`
-      },
-      body: JSON.stringify({
-        app_metadata: {
-          roles: [role]
-        }
-      })
-    })
+    // update the user role on Netlify
+    await updateUserRole(identity, netlifyID, role)
 
     return {
       statusCode: 200,

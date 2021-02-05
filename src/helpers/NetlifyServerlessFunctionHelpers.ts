@@ -1,11 +1,10 @@
-import { loadStripe } from '@stripe/stripe-js'
+import Constants from '../constants/Constants'
 import store from '../store'
 import { setIsRedirectingToManage } from '../store/netlify/actions'
 import { selectToken } from '../utils/selectToken'
 import { ToastHelpers } from './ToastHelpers'
 
 export const navigateToManageStripeSubscription = async () => {
-  // otherwise call function to create link
   try {
     const token = selectToken(store.getState())
     const response = await fetch('/.netlify/functions/stripe-manage-subscription', {
@@ -18,36 +17,7 @@ export const navigateToManageStripeSubscription = async () => {
     const link = await response.json()
     window.location.href = link
   } catch (err) {
-    // TODO error toast with user friendly error
-  }
-}
-
-export const navigateToStripeCheckout = async (tierName: string) => {
-  try {
-    const token = selectToken(store.getState())
-    const response = await fetch('/.netlify/functions/stripe-checkout', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        tierName
-      })
-    })
-    const data = await response.json()
-    const stripe = await loadStripe(data.publishableKey)
-    if (stripe) {
-      const { error } = await stripe.redirectToCheckout({
-        sessionId: data.sessionId
-      })
-      if (error) {
-        console.error(error)
-        const message = error.message ? error.message : 'Unknown error with the checkout process!'
-        ToastHelpers.showSimple(message)
-      }
-    }
-  } catch (error) {
-    console.error(error)
+    ToastHelpers.showSimple('😧 Unknown error navigating to the Stripe subscription dashboard! Are you logged in? 😧')
   }
 }
 
@@ -64,7 +34,14 @@ export const getSubscriptionContent = async (type: string) => {
     const data = await response.json()
     return data
   } catch (e) {
-    // TODO: Toast
+    // Make sure this is handled in the caller!
     throw Error('problem getting protected content')
   }
+}
+
+const getMessage = (data: any) => {
+  if (data.error.code === Constants.STRIPE_ERROR_CODE_RESOURCE_MISSING) {
+    return `For one-click subscription changes, you'll need to add at least one payment method. Click the 'Manage Subscription" button to add a payment method!`
+  }
+  return `An unknown error occurred when we tried to update your subscription. Please try the "Manage Subscription" button above.`
 }

@@ -6,7 +6,6 @@ export const appReducer = combineReducers<AppState>({
   netlify: netlifyReducer
 })
 
-console.log('creating store!')
 const store = createStore(appReducer)
 
 export default store

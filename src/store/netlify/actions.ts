@@ -2,7 +2,6 @@ import INetlifyUser from '../../interfaces/INetlifyUser'
 import { NetlifyActionTypes, SET_IS_INIT_FINISHED, SET_USER, RESET_NETLIFY_STATE, SET_IS_REDIRECTING_TO_MANAGE } from './types'
 
 export function setUser(user: INetlifyUser | undefined): NetlifyActionTypes {
-  console.log('setting user!!!')
   return {
     type: SET_USER,
     payload: {

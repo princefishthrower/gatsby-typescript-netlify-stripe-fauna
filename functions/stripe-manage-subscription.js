@@ -1,23 +1,12 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-const { faunaFetch } = require('./utils/fauna')
+const { getStripeIDByNetlifyID } = require('./utils/fauna')
 
 exports.handler = async (event, context) => {
   const { user } = context.clientContext
+  const netlifyID = user.sub
 
-  const result = await faunaFetch({
-    query: `
-      query ($netlifyID: ID!) {
-        getUserByNetlifyID(netlifyID: $netlifyID) {
-          stripeID
-        }
-      }
-    `,
-    variables: {
-      netlifyID: user.sub
-    }
-  })
-
-  const { stripeID } = result.data.getUserByNetlifyID
+  // get stripe id from netlify ID
+  const stripeID = await getStripeIDByNetlifyID(netlifyID)
 
   const link = await stripe.billingPortal.sessions.create({
     customer: stripeID,

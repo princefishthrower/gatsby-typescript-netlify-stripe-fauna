@@ -1,3 +1,4 @@
+// TODO: should be moved to Fauna
 const content = {
   free: {
     src: 'https://images.unsplash.com/photo-1550159930-40066082a4fc?auto=format&fit=crop&w=600&h=600&q=80',

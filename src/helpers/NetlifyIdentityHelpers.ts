@@ -8,7 +8,6 @@ import INetlifyUser from '../interfaces/INetlifyUser'
 import jwtDecode from 'jwt-decode'
 
 netlifyIdentity.on('init', () => {
-  console.log('netlify initted!')
   store.dispatch(setIsInitFinished())
 })
 
@@ -23,14 +22,7 @@ netlifyIdentity.on('logout', () => {
   ToastHelpers.showSimple('👍 Successfully logged out. 👍')
 })
 
-// netlifyIdentity.on('error', err => {
-//   ToastHelpers.showSimple(
-//     '😱 Uh oh! There was an error with Netlify Identity! (The login and authentication service.) Please try again and contact us if the error continues! 😱'
-//   )
-// })
-
 export const init = () => {
-  console.log('calling init')
   netlifyIdentity.init()
 }
 
@@ -54,8 +46,6 @@ const onLogin = async () => {
   const user = convertNetlifyTokenToUserObject(token)
   store.dispatch(setUser(user))
   netlifyIdentity.close()
-  const welcomeMessage = user.user_metadata.full_name ? `😄 Welcome back, ${user.user_metadata.full_name}! 😄` : '😄 Welcome back! 😄'
-  ToastHelpers.showSimple(welcomeMessage)
 }
 
 const getToken = async (): Promise<string> => {
@@ -75,7 +65,6 @@ const getToken = async (): Promise<string> => {
 
 const convertNetlifyTokenToUserObject = (token: string): INetlifyUser => {
   const data = jwtDecode<INetlifyUser>(token)
-  console.log(data)
   return {
     token,
     user_metadata: {

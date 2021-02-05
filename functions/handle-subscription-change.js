@@ -3,7 +3,8 @@ const { getNetlifyIdByStripeID } = require('./utils/fauna')
 const { updateUserRole } = require('./utils/updateUserRole')
 const { sendSlackMessage } = require('./utils/slack')
 
-exports.handler = async ({ body, headers }) => {
+exports.handler = async ({ body, headers }, context) => {
+  const { identity } = context.clientContext
   try {
     // make sure this event was sent legitimately.
     const stripeEvent = stripe.webhooks.constructEvent(body, headers['stripe-signature'], process.env.STRIPE_WEBHOOK_SECRET)
@@ -26,10 +27,10 @@ exports.handler = async ({ body, headers }) => {
       body: JSON.stringify({ received: true, roleSet: role })
     }
   } catch (err) {
-    sendSlackMessage(`Stripe handle subscription change webhook wrror: ${err.message}`)
+    sendSlackMessage(`Stripe handle subscription change webhook error: ${err.message}`)
     return {
       statusCode: 400,
-      body: `Stripe handle subscription change webhook wrror: ${err.message}`
+      body: `Stripe handle subscription change webhook error: ${err.message}`
     }
   }
 }

@@ -1,6 +1,5 @@
 import Constants from '../constants/Constants'
 import store from '../store'
-import { setIsRedirectingToManage } from '../store/netlify/actions'
 import { selectToken } from '../utils/selectToken'
 import { ToastHelpers } from './ToastHelpers'
 
@@ -13,7 +12,6 @@ export const navigateToManageStripeSubscription = async () => {
         Authorization: `Bearer ${token}`
       }
     })
-    setIsRedirectingToManage(false)
     const link = await response.json()
     window.location.href = link
   } catch (err) {

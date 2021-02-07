@@ -7,19 +7,20 @@ import Constants from '../constants/Constants'
 import { AppState } from '../store/types'
 import { ToastHelpers } from '../helpers/ToastHelpers'
 import { graphql, Link } from 'gatsby'
-import { Loader } from '../components/loader/Loader'
-import { getSubscriptionContent, navigateToManageStripeSubscription } from '../helpers/NetlifyServerlessFunctionHelpers'
+import { getSubscriptionContent } from '../helpers/NetlifyServerlessFunctionHelpers'
+import { ManageSubscriptionButton } from '../components/ManageSubscriptionButton'
 
 const Index = ({ data }) => {
-  const { user, isInitFinished } = useSelector((state: AppState) => state.netlify)
+  const { user } = useSelector((state: AppState) => state.netlify)
+
+  console.log('rendering yo!')
 
   const [tierStates, setTierStates] = useState<
     Array<{
       tierName: string
       tierData: {
-        message: string
         content: string
-        upgradeTo: string
+        upgradeTo?: string
       }
     }>
   >(
@@ -27,7 +28,6 @@ const Index = ({ data }) => {
       return {
         tierName,
         tierData: {
-          message: 'Log in to continue',
           content: '',
           upgradeTo: ''
         }
@@ -43,7 +43,6 @@ const Index = ({ data }) => {
           const currentTier = tierStates.filter(tierData => tierData.tierName === tierName)
           const otherTiers = tierStates.filter(tierData => tierData.tierName !== tierName)
           if (currentTier.length > 0) {
-            currentTier[0].tierData.message = data.message
             currentTier[0].tierData.content = data.content
             currentTier[0].tierData.upgradeTo = data.upgradeTo
             setTierStates([...otherTiers, ...currentTier])
@@ -60,11 +59,7 @@ const Index = ({ data }) => {
   }, [user])
 
   const getRestOfPageContent = () => {
-    if (!isInitFinished) {
-      return <Loader />
-    }
-
-    if (isInitFinished && !user) {
+    if (!user) {
       return <b>You need to log in to view the rest of the content on this page.</b>
     }
 
@@ -76,11 +71,8 @@ const Index = ({ data }) => {
           return (
             <React.Fragment key={tierState.tierName}>
               <h3>{tierState.tierName}</h3>
-              <p>{tierState.tierData.message}</p>
               <p>{tierState.tierData.content}</p>
-              {tierState.tierData.upgradeTo && (
-                <button onClick={() => navigateToManageStripeSubscription()}>Upgrade to {tierState.tierData.upgradeTo}</button>
-              )}
+              {tierState.tierData.upgradeTo && <ManageSubscriptionButton label={`Upgrade to ${tierState.tierData.upgradeTo}`} />}
             </React.Fragment>
           )
         })}

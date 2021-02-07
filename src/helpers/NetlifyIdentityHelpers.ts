@@ -1,31 +1,11 @@
 import { ToastHelpers } from './ToastHelpers'
-import netlifyIdentity from 'netlify-identity-widget'
-import { setIsInitFinished, setUser } from '../store/netlify/actions'
+import netlifyIdentity, { User } from 'netlify-identity-widget'
+import { setUser } from '../store/netlify/actions'
 import store from '../store'
 import { clearNavigationParamFromWindow, isNavigationFromSubscriptionSite } from './UrlSearchParamHelpers'
 import { sleep } from '../utils/sleep'
 import INetlifyUser from '../interfaces/INetlifyUser'
 import jwtDecode from 'jwt-decode'
-
-netlifyIdentity.on('init', () => {
-  console.log('dispatching')
-  store.dispatch(setIsInitFinished())
-})
-
-netlifyIdentity.on('login', () => {
-  onLogin()
-})
-
-netlifyIdentity.on('logout', () => {
-  store.dispatch(setUser(undefined))
-  netlifyIdentity.close()
-  ToastHelpers.showSimple('👍 Successfully logged out. 👍')
-})
-
-export const init = () => {
-  console.log('calling init')
-  netlifyIdentity.init()
-}
 
 // open the modal to the login tab
 export const login = () => {
@@ -41,6 +21,16 @@ export const logout = () => {
 export const signUp = () => {
   netlifyIdentity.open('signup')
 }
+
+netlifyIdentity.on('login', () => {
+  onLogin()
+})
+
+netlifyIdentity.on('logout', () => {
+  store.dispatch(setUser(null))
+  netlifyIdentity.close()
+  ToastHelpers.showSimple('👍 Successfully logged out. 👍')
+})
 
 const onLogin = async () => {
   const token = await getToken()
@@ -58,13 +48,13 @@ const getToken = async (): Promise<string> => {
     ToastHelpers.showSimple('✅ Checking for any change to your subscription...')
     await sleep(5000)
     clearNavigationParamFromWindow()
-    ToastHelpers.showSimple('👍 All set! Enjoy!')
+    ToastHelpers.showSimple('👍 Your subscription settings have been refreshed! Enjoy!')
   }
   // then refresh the token!
   return await netlifyIdentity.refresh(shouldForceRefresh)
 }
 
-const convertNetlifyTokenToUserObject = (token: string): INetlifyUser => {
+export const convertNetlifyTokenToUserObject = (token: string): INetlifyUser => {
   const data = jwtDecode<INetlifyUser>(token)
   return {
     token,

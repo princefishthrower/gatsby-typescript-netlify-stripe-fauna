@@ -63,8 +63,6 @@ export abstract class ToastHelpers {
     // add active class and event listener
     for (let i = 0; i < elements.length; i++) {
       const item = elements[i]
-
-      item.classList.add('active')
       item.addEventListener('click', ToastHelpers.handleClick, false)
     }
   }
@@ -81,13 +79,7 @@ export abstract class ToastHelpers {
         denyFunction()
       }
 
-      item.classList.add('closing')
       item.removeEventListener('click', ToastHelpers.handleClick)
-
-      // Close all toasts after each other
-      setTimeout(() => {
-        item.classList.remove('closing', 'active')
-      }, i * 50 + 250)
     }
   }
 

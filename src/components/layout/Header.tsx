@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link } from 'gatsby'
 import { useSelector } from 'react-redux'
 import { navigateToManageStripeSubscription } from '../../helpers/NetlifyServerlessFunctionHelpers'
 import { AppState } from '../../store/types'
-import { init, login, logout, signUp } from '../../helpers/NetlifyIdentityHelpers'
-import { Loader } from '../loader/Loader'
-import { setIsRedirectingToManage } from '../../store/netlify/actions'
+import { login, logout, signUp } from '../../helpers/NetlifyIdentityHelpers'
+import { useState } from 'react'
+import { ManageSubscriptionButton } from '../ManageSubscriptionButton'
 
 export interface IHeaderProps {
   siteTitle: string
@@ -13,19 +13,9 @@ export interface IHeaderProps {
 
 export default function Header(props: IHeaderProps) {
   const { siteTitle } = props
-  const { user, isInitFinished, isRedirectingToManage } = useSelector((state: AppState) => state.netlify)
-
-  useEffect(() => {
-    if (!isInitFinished) {
-      init()
-    }
-  }, [isInitFinished])
+  const { user } = useSelector((state: AppState) => state.netlify)
 
   const getHeaderContent = () => {
-    if (!isInitFinished) {
-      return <Loader />
-    }
-
     if (user) {
       const { user_metadata, app_metadata } = user
       const { full_name, avatar_url } = user_metadata
@@ -40,25 +30,16 @@ export default function Header(props: IHeaderProps) {
           </p>
           {avatar_url && <img src={avatar_url} />}
           <button onClick={logout}>Log out</button>
-          <button
-            disabled={isRedirectingToManage}
-            onClick={() => {
-              setIsRedirectingToManage(true)
-              navigateToManageStripeSubscription()
-            }}
-          >
-            Manage Subscription
-          </button>
-        </>
-      )
-    } else {
-      return (
-        <>
-          <button onClick={signUp}>Sign up</button>
-          <button onClick={login}>Log in</button>
+          <ManageSubscriptionButton label="Manage Subscription" />
         </>
       )
     }
+    return (
+      <>
+        <button onClick={signUp}>Sign up</button>
+        <button onClick={login}>Log in</button>
+      </>
+    )
   }
 
   return (

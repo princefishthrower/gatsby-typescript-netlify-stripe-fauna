@@ -23,9 +23,11 @@ export default function Header(props: IHeaderProps) {
           <p>
             You are logged in as <b>{full_name}</b>
           </p>
-          <p>
-            Your current subscription plan is: <b>{roles.join(' ')}</b>
-          </p>
+          {roles && roles.length > 0 && (
+            <p>
+              Your current subscription plan is: <b>{roles.join(' ')}</b>
+            </p>
+          )}
           {avatar_url && <img src={avatar_url} />}
           <button onClick={logout}>Log out</button>
           <ManageSubscriptionButton label="Manage Subscription" />

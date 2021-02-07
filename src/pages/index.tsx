@@ -12,9 +12,6 @@ import { ManageSubscriptionButton } from '../components/ManageSubscriptionButton
 
 const Index = ({ data }) => {
   const { user } = useSelector((state: AppState) => state.netlify)
-
-  console.log('rendering yo!')
-
   const [tierStates, setTierStates] = useState<
     Array<{
       tierName: string

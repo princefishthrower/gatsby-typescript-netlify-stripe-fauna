@@ -12,7 +12,7 @@ exports.updateUserRole = async (identity, netlifyID, role) => {
       },
       body: JSON.stringify({
         app_metadata: {
-          roles: role
+          roles: [role]
         }
       })
     })

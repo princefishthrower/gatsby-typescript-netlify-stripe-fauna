@@ -4,6 +4,7 @@ exports.createUser = async (netlifyID, stripeID) => {
   try {
     await createUserQuery(netlifyID, stripeID)
   } catch (error) {
+    sendSlackMessage(`createUser error: ${error.message}`)
     throw error
   }
 }
@@ -13,6 +14,7 @@ exports.getNetlifyIdByStripeID = async stripeID => {
     const result = await faunaNetlifyIDByStripeIDQuery(stripeID)
     return result.data.getUserByStripeID.netlifyID
   } catch (error) {
+    sendSlackMessage(`getNetlifyIdByStripeID error: ${error.message}`)
     throw error
   }
 }
@@ -22,6 +24,7 @@ exports.getStripeIDByNetlifyID = async netlifyID => {
     const result = await faunaStripeIDByNetlifyIDQuery(netlifyID)
     return result.data.getUserByNetlifyID.stripeID
   } catch (error) {
+    sendSlackMessage(`getStripeIDByNetlifyID error: ${error.message}`)
     throw error
   }
 }
@@ -39,7 +42,7 @@ const faunaFetch = async ({ query, variables }) => {
     })
   })
     .then(res => res.json())
-    .catch(err => console.error(JSON.stringify(err, null, 2)))
+    .catch(error => console.error(JSON.stringify(error, null, 2)))
 }
 
 // query wrapper for fauna query

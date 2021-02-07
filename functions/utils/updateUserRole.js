@@ -1,3 +1,5 @@
+const fetch = require('node-fetch')
+
 // Call Netlify Identity Admin API to update the user role
 exports.updateUserRole = async (identity, user, netlifyID) => {
   try {
@@ -19,6 +21,7 @@ exports.updateUserRole = async (identity, user, netlifyID) => {
       body: JSON.stringify({ received: true, roleSet: role })
     }
   } catch (error) {
+    sendSlackMessage(`updateUserRole error: ${error.message}`)
     throw error
   }
 }

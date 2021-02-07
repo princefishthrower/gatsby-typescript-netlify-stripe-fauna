@@ -1,5 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-const { faunaFetch, createUser } = require('./utils/fauna')
+const { createUser } = require('./utils/fauna')
 
 exports.handler = async event => {
   const { user } = JSON.parse(event.body)
@@ -25,6 +25,7 @@ exports.handler = async event => {
       })
     }
   } catch (error) {
+    sendSlackMessage(`identity-signup error: ${error.message}`)
     return {
       statusCode: 500
     }

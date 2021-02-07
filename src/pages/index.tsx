@@ -8,11 +8,7 @@ import { AppState } from '../store/types'
 import { ToastHelpers } from '../helpers/ToastHelpers'
 import { graphql, Link } from 'gatsby'
 import { Loader } from '../components/loader/Loader'
-import {
-  getSubscriptionContent,
-  changeStripeSubscription,
-  navigateToManageStripeSubscription
-} from '../helpers/NetlifyServerlessFunctionHelpers'
+import { getSubscriptionContent, navigateToManageStripeSubscription } from '../helpers/NetlifyServerlessFunctionHelpers'
 
 const Index = ({ data }) => {
   const { user, isInitFinished } = useSelector((state: AppState) => state.netlify)
@@ -22,7 +18,7 @@ const Index = ({ data }) => {
       tierName: string
       tierData: {
         message: string
-        src: string
+        content: string
         upgradeTo: string
       }
     }>
@@ -32,7 +28,7 @@ const Index = ({ data }) => {
         tierName,
         tierData: {
           message: 'Log in to continue',
-          src: '',
+          content: '',
           upgradeTo: ''
         }
       }
@@ -47,8 +43,8 @@ const Index = ({ data }) => {
           const currentTier = tierStates.filter(tierData => tierData.tierName === tierName)
           const otherTiers = tierStates.filter(tierData => tierData.tierName !== tierName)
           if (currentTier.length > 0) {
-            currentTier[0].tierData.message = data.alt
-            currentTier[0].tierData.src = data.src
+            currentTier[0].tierData.message = data.message
+            currentTier[0].tierData.content = data.content
             currentTier[0].tierData.upgradeTo = data.upgradeTo
             setTierStates([...otherTiers, ...currentTier])
           }
@@ -81,7 +77,7 @@ const Index = ({ data }) => {
             <React.Fragment key={tierState.tierName}>
               <h3>{tierState.tierName}</h3>
               <p>{tierState.tierData.message}</p>
-              <img src={tierState.tierData.src} />
+              <p>{tierState.tierData.content}</p>
               {tierState.tierData.upgradeTo && (
                 <button onClick={() => navigateToManageStripeSubscription()}>Upgrade to {tierState.tierData.upgradeTo}</button>
               )}

@@ -8,10 +8,10 @@ import INetlifyUser from '../interfaces/INetlifyUser'
 import jwtDecode from 'jwt-decode'
 
 netlifyIdentity.on('init', () => {
+  console.log('dispatching')
   store.dispatch(setIsInitFinished())
 })
 
-// events
 netlifyIdentity.on('login', () => {
   onLogin()
 })
@@ -23,6 +23,7 @@ netlifyIdentity.on('logout', () => {
 })
 
 export const init = () => {
+  console.log('calling init')
   netlifyIdentity.init()
 }
 

@@ -19,7 +19,8 @@ export const logout = () => {
     <p>Are you sure you want to log off?</p>,
     <button onClick={() => netlifyIdentity.logout()}>Yes</button>,
     <button>No</button>,
-    () => {}
+    () => {},
+    true
   )
 }
 

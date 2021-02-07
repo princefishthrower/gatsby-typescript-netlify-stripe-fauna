@@ -11,13 +11,15 @@ export const appReducer = combineReducers<AppState>({
 
 const store = createStore(appReducer)
 
-netlifyIdentity.on('init', netlifyUser => {
-  if (netlifyUser && netlifyUser.token) {
-    const user = convertNetlifyTokenToUserObject(netlifyUser.token.access_token)
-    store.dispatch(setUser(user))
-  }
-})
+if (typeof document !== 'undefined') {
+  netlifyIdentity.on('init', netlifyUser => {
+    if (netlifyUser && netlifyUser.token) {
+      const user = convertNetlifyTokenToUserObject(netlifyUser.token.access_token)
+      store.dispatch(setUser(user))
+    }
+  })
 
-netlifyIdentity.init()
+  netlifyIdentity.init()
+}
 
 export default store

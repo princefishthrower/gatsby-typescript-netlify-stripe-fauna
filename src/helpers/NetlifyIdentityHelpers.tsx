@@ -1,3 +1,4 @@
+import React from 'react'
 import { ToastHelpers } from './ToastHelpers'
 import netlifyIdentity, { User } from 'netlify-identity-widget'
 import { setUser } from '../store/netlify/actions'
@@ -14,7 +15,12 @@ export const login = () => {
 
 // logout
 export const logout = () => {
-  netlifyIdentity.logout()
+  ToastHelpers.showComplex(
+    <p>Are you sure you want to log off?</p>,
+    <button onClick={() => netlifyIdentity.logout()}>Yes</button>,
+    <button>No</button>,
+    () => {}
+  )
 }
 
 // open the modal to the signup tab

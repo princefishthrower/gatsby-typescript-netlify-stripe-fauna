@@ -1,10 +1,8 @@
 import React from 'react'
 import { Link } from 'gatsby'
 import { useSelector } from 'react-redux'
-import { navigateToManageStripeSubscription } from '../../helpers/NetlifyServerlessFunctionHelpers'
 import { AppState } from '../../store/types'
 import { login, logout, signUp } from '../../helpers/NetlifyIdentityHelpers'
-import { useState } from 'react'
 import { ManageSubscriptionButton } from '../ManageSubscriptionButton'
 
 export interface IHeaderProps {

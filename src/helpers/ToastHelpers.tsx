@@ -7,11 +7,11 @@ export abstract class ToastHelpers {
    * @param {string} message The message to show.
    * @param {ToastOptions} [options] Options to override (Optional).
    */
-  public static showSimple(message: string, options?: ToastOptions): React.ReactText {
+  public static showSimple(message: string, darkenScreen: boolean = false, options?: ToastOptions): React.ReactText {
     return toast(message, {
       ...options,
-      onOpen: () => ToastHelpers.handleOnOpen(),
-      onClose: () => ToastHelpers.handleOnClose()
+      onOpen: () => ToastHelpers.handleOnOpen(darkenScreen),
+      onClose: () => ToastHelpers.handleOnClose(darkenScreen)
     })
   }
 
@@ -30,7 +30,8 @@ export abstract class ToastHelpers {
     messageComponent: React.ReactNode,
     confirmButton: React.ReactNode,
     denyButton: React.ReactNode,
-    denyFunction: () => void
+    denyFunction: () => void,
+    darkenScreen: boolean = false
   ): void {
     toast(
       <>
@@ -47,8 +48,8 @@ export abstract class ToastHelpers {
         draggable: false,
         progress: undefined,
         closeButton: false,
-        onOpen: () => ToastHelpers.handleOnOpen(),
-        onClose: () => ToastHelpers.handleOnClose(denyFunction)
+        onOpen: () => ToastHelpers.handleOnOpen(darkenScreen),
+        onClose: () => ToastHelpers.handleOnClose(darkenScreen, denyFunction)
       }
     )
   }
@@ -57,17 +58,22 @@ export abstract class ToastHelpers {
     toast.dismiss(toastId)
   }
 
-  private static handleOnOpen() {
+  private static handleOnOpen(darkenScreen: boolean) {
     const elements = document.getElementsByClassName('Toastify')
 
     // add active class and event listener
     for (let i = 0; i < elements.length; i++) {
       const item = elements[i]
+
       item.addEventListener('click', ToastHelpers.handleClick, false)
+
+      if (darkenScreen) {
+        item.classList.add('active')
+      }
     }
   }
 
-  private static handleOnClose(denyFunction?: () => void) {
+  private static handleOnClose(darkenScreen: boolean, denyFunction?: () => void) {
     const elements = document.getElementsByClassName('Toastify')
 
     // fire deny function, remove classes, cleanup event listeners
@@ -80,6 +86,14 @@ export abstract class ToastHelpers {
       }
 
       item.removeEventListener('click', ToastHelpers.handleClick)
+
+      if (darkenScreen) {
+        item.classList.add('closing')
+        // Close all toasts after each other
+        setTimeout(() => {
+          item.classList.remove('closing', 'active')
+        }, i * 50 + 250)
+      }
     }
   }
 

@@ -4,7 +4,7 @@ const { updateUserRole } = require('./utils/updateUserRole')
 const { sendSlackMessage } = require('./utils/slack')
 
 exports.handler = async ({ body, headers }, context) => {
-  const { identity } = context.clientContext
+  const { identity, user } = context.clientContext
   try {
     // make sure this event was sent legitimately.
     const stripeEvent = stripe.webhooks.constructEvent(body, headers['stripe-signature'], process.env.STRIPE_WEBHOOK_SECRET)
@@ -20,7 +20,7 @@ exports.handler = async ({ body, headers }, context) => {
     const netlifyID = await getNetlifyIdByStripeID(stripeID)
 
     // update the user role on Netlify
-    await updateUserRole(identity, netlifyID, role)
+    await updateUserRole(identity, user, netlifyID)
 
     return {
       statusCode: 200,

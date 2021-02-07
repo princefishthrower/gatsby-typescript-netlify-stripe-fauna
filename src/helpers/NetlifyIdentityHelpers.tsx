@@ -1,6 +1,6 @@
 import React from 'react'
 import { ToastHelpers } from './ToastHelpers'
-import netlifyIdentity, { User } from 'netlify-identity-widget'
+import netlifyIdentity from 'netlify-identity-widget'
 import { setUser } from '../store/netlify/actions'
 import store from '../store'
 import { clearNavigationParamFromWindow, isNavigationFromSubscriptionSite } from './UrlSearchParamHelpers'
@@ -73,14 +73,3 @@ export const convertNetlifyTokenToUserObject = (token: string): INetlifyUser => 
     }
   }
 }
-
-// Other goodies not used
-// netlifyIdentity.on('init', user => console.log('init', user))
-// netlifyIdentity.on('open', () => console.log('Widget opened'))
-// netlifyIdentity.on('close', () => console.log('Widget closed'))
-// Unbind from events
-// netlifyIdentity.off('login') // to unbind all registered handlers
-// netlifyIdentity.off('login', handler) // to unbind a single handler
-// refresh the user's JWT
-// Note: this method returns a promise.
-// netlifyIdentity.refresh().then(jwt => console.log(jwt))

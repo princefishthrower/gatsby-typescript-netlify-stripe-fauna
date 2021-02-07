@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const { createUser } = require('./utils/fauna')
+const { sendSlackMessage } = require('./utils/slack')
 
 exports.handler = async event => {
   const { user } = JSON.parse(event.body)

@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const { sendSlackMessage } = require('./utils/slack')
 
 // Call Netlify Identity Admin API to update the user role
 exports.updateUserRole = async (identity, user, netlifyID) => {

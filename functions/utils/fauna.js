@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const { sendSlackMessage } = require('./utils/slack')
 
 exports.createUser = async (netlifyID, stripeID) => {
   try {

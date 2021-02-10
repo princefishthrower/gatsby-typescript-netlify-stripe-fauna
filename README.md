@@ -24,7 +24,7 @@ You NEED to do the following first:
    - STRIPE_SECRET_KEY - Your secret API key from stripe (looks something like `sk_test_blahblahblah`) - again, make sure 'Viewing test data' is ACTIVE).
    - STRIPE_PUBLISHABLE_KEY - Your public API key from stripe (looks something like `pk_test_blahblahblah`) - again, make sure 'Viewing test data' is ACTIVE).
    - STRIPE_WEBHOOK_SECRET - The webhook signing secret from the webhook you created in step 3. (Again, make sure 'Viewing test data' is ACTIVE)
-   - SLACK_WEBHOOK_URL - if you want to get serverless functions with error logging to your slack, provide this key as well
+   - SLACK_WEBHOOK_URL - if you want to get serverless functions with error logging to a Slack bot, provide this key as well
 
 # What's Inside?
 
